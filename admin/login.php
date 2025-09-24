@@ -1,10 +1,44 @@
+<?php 
+    include_once("../db/conexao.php");
+    // Verificar se foi feito um submit
+    if($_SERVER["REQUEST_METHOD"] === "POST") {
+        // Guardar o valor de uma input (POST) na variável e verificar se ela existe
+        $email = $_POST["email"] ?? "";
+        $senha = $_POST["senha"] ?? "";
+        // Verificar se recebi o email e a senha
+        if($email != "" && $senha != '') {
+            $sql = "SELECT * FROM usuarios WHERE email_usuario = ? and senha_usuario = MD5(?)";
+            $stmt = $conexao->prepare($sql);
+            $stmt->bind_param("ss", $email, $senha);
+            $stmt->execute();
+            $resultado = $stmt->get_result();
+            while ($linha = $resultado->fetch_object()) {
+                session_start();
+                $id_usuario = $linha->id_usuario;
+                $nome_usuario = $linha->nome_usuario;
+                $_SESSION["id_usuario"] = $id_usuario;
+                $_SESSION["nome_usuario"] = $nome_usuario;
+                header("Location: principal.php");
+                exit();
+            }
+            if ($resultado->num_rows == 0) {
+                $erro = "Email/senha não encontrados!";
+            }
+        }
+        else {
+            $erro = "Não foi possível validar o email/senha.";
+        }
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="pt-BR" data-bs-theme="auto">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sistema Administrativo - Lalá Cake</title>
+    <title>Sistema Administrativo - Sweet Bliss Cakes</title>
     <link rel="icon" href="./img/favicon.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
@@ -42,8 +76,8 @@
         </symbol>
     </svg>
 
-    <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
-        <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center" id="bd-theme" type="button"
+    <div class="dropdown position-fixed top-0 end-0 mt-3 me-3 bd-mode-toggle">
+        <button class="btn btn-outline-primary py-2 dropdown-toggle d-flex align-items-center" id="bd-theme" type="button"
             aria-expanded="false" data-bs-toggle="dropdown" aria-label="Toggle theme (auto)"> <svg
                 class="bi my-1 theme-icon-active" aria-hidden="true">
                 <use href="#circle-half"></use>
@@ -90,17 +124,27 @@
 
     <main class="form-signin w-100 m-auto">
         <form method="post">
-            <img class="mb-4" src="./img/logotipo.png" alt="" width="64">
+            <div class="d-flex justify-content-center">
+                <img class="mb-4" src="./img/logo.png" width="150">
+            </div>
             <h1 class="h3 mb-3 fw-normal">Login</h1>
             <div class="form-floating">
-                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
-                <label for="email">email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" maxlength="50" required>
+                <label for="email">Email</label>
             </div>
             <div class="form-floating">
-                <input type="password" class="form-control" id="senha" name="senha" placeholder="Password">
+                <input type="password" class="form-control" id="senha" name="senha" placeholder="Password" minlength="8" maxlength="14" required>
                 <label for="senha">Senha</label>
             </div>
             <button class="btn btn-primary w-100 py-2" type="submit">Entrar</button>
+            <?php 
+                // Comando para verificar se uma variável existe
+                if(isset($erro) == true) {
+                    echo "<div class='alert alert-danger mt-2 p-2 small text-center' role='alert'>";
+                    echo($erro);
+                    echo"</div>";
+                }
+            ?>
         </form>
     </main>
 

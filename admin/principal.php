@@ -1,3 +1,13 @@
+<?php
+  session_start();
+  // Verificar se a variável não existe, usar o ! na frente
+  if (!isset($_SESSION["id_usuario"])) {
+    header("Location: login.php");
+    exit();
+  }
+  include_once("../db/conexao.php");
+?>
+
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
 
