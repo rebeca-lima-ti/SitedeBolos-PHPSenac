@@ -31,13 +31,13 @@ $total = $resultado->num_rows;
                 <!-- Titulo principal -->
                 <div
                     class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Usuários - Principal</h1>
+                    <h1 class="h2">Usuários - Pesquisa</h1>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group me-2">
-                            <button type="button" class="btn btn-sm btn-outline-secondary">
+                            <button type="button" class="btn btn-outline-secondary">
                                 Botão 1
                             </button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary">
+                            <button type="button" class="btn btn-outline-secondary">
                                 Botão 2
                             </button>
                         </div>
@@ -46,14 +46,14 @@ $total = $resultado->num_rows;
 
                 <!-- Conteudo principal -->
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body p-4">
                         <table class="table">
                             <thead>
                                 <tr>
                                     <th scope="col" style="width: 2.7rem;">#</th>
                                     <th scope="col">Nome</th>
                                     <th scope="col">E-mail</th>
-                                    <th scope="col" style="width: 10rem;">Ações</th>
+                                    <th scope="col" class="text-center" style="width: 10rem;">Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,11 +66,11 @@ $total = $resultado->num_rows;
                                     <th scope="row"><?= $i ?></th>
                                     <td><?= $linha -> nome_usuario ?></td>
                                     <td><?= $linha -> email_usuario ?></td>
-                                    <td>
-                                        <a href="./cad-usuario.php" class="btn btn-sm btn-outline-primary me-2">
+                                    <td class="text-center">
+                                        <a href="./cad-usuario.php?id=<?= $linha->id_usuario ?>" class="btn btn-sm btn-outline-primary me-2">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
-                                        <button class="btn btn-sm btn-outline-danger me-2">
+                                        <button class="btn btn-sm btn-outline-danger">
                                             <i class="fa-solid fa-trash-can"></i>
                                         </button>
                                     </td>
