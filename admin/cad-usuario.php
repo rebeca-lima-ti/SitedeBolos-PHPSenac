@@ -5,6 +5,8 @@ $titulo = "Novo";
 $nome_usuario = $_POST["nome_usuario"] ?? "";
 $email_usuario = $_POST["email_usuario"] ?? "";
 $senha_usuario = $_POST["senha_usuario"] ?? "";
+$foto_usuario = $_FILES["foto_usuario"] ?? "";
+
 if (is_numeric($id)) {
     $sql = "SELECT * FROM usuarios WHERE id_usuario = ?";
     $stmt = $conexao->prepare($sql);
@@ -21,6 +23,30 @@ if (is_numeric($id)) {
         $senha_usuario = $linha->senha_usuario;
         $foto_usuario = $linha->foto_usuario;
         $titulo = "Alterar";
+        // Criar pasta
+        $caminho = __DIR__."/img";
+        $pasta = str_pad($id,4,"0", STR_PAD_LEFT);
+        if (!is_dir ("$caminho/$pasta")) {
+            mkdir("$caminho/$pasta", 0733);
+        }
+        else {
+            $arquivos = scandir("$caminho/$pasta");
+            foreach ($arquivos as $arq) {
+                if ($arq != "." && $arq != "..") {
+                    $imagem = "$pasta/$arq";
+                }
+            }
+        }
+    }
+}
+// Mover foto para a pasta
+if (is_numeric($id)) {
+    if (isset($_FILES["foto_usuario"]["name"])) {
+        if ($_FILES["foto_usuario"]["error"] == 0) {
+            $arq_temp = $_FILES["foto_usuario"]["tmp_name"];
+            $arq_final = "$caminho/$pasta/".$_FILES["foto_usuario"]["name"];
+            move_uploaded_file($arq_temp, $arq_final);
+        }
     }
 }
 ?>
@@ -65,7 +91,7 @@ if (is_numeric($id)) {
                 <!-- Conteudo principal -->
                 <div class="card">
                     <div class="card-body">
-                        <form method="POST">
+                        <form method="POST" action="" enctype="multipart/form-data">
                             <div class="row p-2">
                                 <div class="col-md-7">
                                     <div class="row">
@@ -90,6 +116,13 @@ if (is_numeric($id)) {
                                 <div class="col-md-5">
                                     <label for="foto_usuario" class="form-label">Foto</label>
                                     <input type="file" id="foto_usuario" name="foto_usuario" class="form-control" accept="image/png, image/jpeg">
+                                    <?php 
+                                        if (isset($imagem)) {
+                                    ?>
+                                    <img src="./img/<?= $imagem ?>" class="img-fluid">
+                                    <?php
+                                        }
+                                    ?>
                                 </div>
                             </div>
                             <hr>
